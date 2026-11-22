@@ -1,0 +1,13 @@
+.DS_Store
+*.log
+node_modules/
+.venv/
+__pycache__/
+/.work/
+AGENTS.local.md
+.env
+.env.*
+
+# Third-party media and ASR stay in the local project until redistribution is cleared.
+/docs/tutorial-evidence/README.md
+/docs/tutorial-evidence/[0-9][0-9]/
