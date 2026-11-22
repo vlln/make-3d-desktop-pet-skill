@@ -1,9 +1,5 @@
 # 开发与验证记录
 
-## 0.4.1
-
-- 在 `providers.md` 增加「用途决定档位」：桌宠走智能拓扑，打印/展示向功能（高精度档、8K、多色打印、自动拆件、水密修复）默认不选；已有高面数成品降面用 [Meshy Remesh](https://docs.meshy.ai/en/api/remesh) 或 Tripo retopology，不在 Blender 全局抽面。补记 Meshy 单图 `smart-topology` 为三角面为主、多图无智能拓扑，与 Tripo P 系列四边面优先不同。依据 [Remesh API](https://docs.meshy.ai/en/api/remesh) 与[官方重拓扑指南](https://www.meshy.ai/zh/tutorials/ai-retopology-guide)。接口能力以 2026-11 文档为准，使用前按对应页面复核现行字段。
-
 ## 0.4.0
 
 - 在生成网格前增加图像验收关卡：保留批准基准，用同视角对照比例与身份，分开检查多视图一致性和重建条件，明确通过、局部复审或退回。不需要为已合格的原图重绘。

@@ -18,10 +18,6 @@ skit install . --all
 
 本项目是 Agent Skill，不是桌宠播放器。只审图不需要 Blender 或云账号；修模和导出 VRM 使用 Blender 与 VRM 扩展；仅在需要云端生成时才配置 Tripo 或 Meshy。能否播放独立动作及触发弹簧和表情，以目标桌宠软件为准。
 
-## 时效说明
-
-Tripo、Meshy、Blender 与宿主软件的接口和界面会持续变化；Skill 中的具体字段与菜单以 **[2026-11 验证](SOURCES.md)** 为准，使用前按对应官方文档复核现行能力。
-
 ## 参考视频
 
 小红书《3D 桌宠制作全流程》系列。
