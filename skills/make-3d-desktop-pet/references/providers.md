@@ -7,6 +7,11 @@
 - 提交前记录服务、区域、帐号/额度、允许外传的文件、按视角的哈希、模型标识、参数、预计次数和费用。无授权只写计划。安装与登录由宿主授权，登录验证码交给用户；凭据从宿主管理的注入渠道获取，不打印密钥、签名链接或 data URI，不把私图发布为公网 URL。允许调用不等于允许购买额度或开订阅。
 - 先提交一次并保存任务类型和 ID，再有界轮询同一任务。查询超时不是生成失败。创建请求送出后响应丢失，先查看任务历史或账户任务，无法确认就停，不能自动重发或切平台再提交。对查询用服务商规定的间隔/退避；读取失败详情、实际扣费，保留原始文件并尽快下载有时效的资产。
 
+## 用途决定档位
+
+- 桌宠角色要绑定变形：走智能拓扑/低面数路线（Tripo P 系列、Meshy 单图 `smart-topology`）。打印与展示向的功能——高精度档（H 系列、Ultra 2K/4K）、8K 贴图、多色打印、自动拆件、水密修复——是另一条产品线，不改桌宠的拓扑目标，默认不选；「更高精度」不等于「更适合动画」。
+- **已有高面数成品要降面时，用生成式重拓扑，不要在 Blender 全局 Decimate/Collapse**：抽面只删面不重布线，关节环线与五官会先坏。Meshy [Remesh](https://docs.meshy.ai/en/api/remesh) 接受上传的 FBX/OBJ/STL/GLB（≤100MB），可选四边占优或三角输出、目标面数、并可保留贴图到新拓扑；Tripo 亦有 retopology 类任务，字段按当前文档核对。不想上传就用本地 Quad Remesher / Voxel Remesh。重拓扑后按原网格对照轮廓、关节走线与贴图接缝再进入绑骨。
+
 ## Tripo
 
 查 [官方 CLI](https://developers.tripo3d.ai/en/docs/cli)、[鉴权与区域](https://developers.tripo3d.ai/en/docs/authentication)、[计费](https://developers.tripo3d.ai/en/docs/billing)、[版本](https://developers.tripo3d.ai/en/docs/models-and-versions)。从 [单图 P 系列](https://developers.tripo3d.ai/en/docs/generation-image-to-model/p) / [多图 P 系列](https://developers.tripo3d.ai/en/docs/generation-multiview-to-model/p) 查智能拓扑，从对应 H 系列页面查高精度选项；不要把 v2 的 `/task` 信封和字段套到 v3。
@@ -45,7 +50,7 @@ meshy multi-image-to-3d wait "$TASK_ID" -o ./out/meshy --format json
 
 从创建结果取 `result.submission.task_id`，从查询结果读 `result.task.status`；`ok: true` 只表示 CLI 执行成功。超时恢复同 ID，创建结果未知则先 `meshy <resource> list`。导出贴图等附属文件用 `--all-assets`（见当前帮助）。
 
-**REST**：全球端点 `https://api.meshy.ai/openapi/v1`，用 Bearer 鉴权。[单图](https://docs.meshy.ai/en/api/image-to-3d) `POST /image-to-3d` 传 `image_url`；[多图](https://docs.meshy.ai/en/api/multi-image-to-3d) `POST /multi-image-to-3d` 传 `image_urls`（1–4 张、受支持的 data URI 或已授权可公开直链；支持首张作正面的模型要将正面放第一）。裸网格设 `should_texture:false`，需要时设 `target_formats:["glb"]`；多图的 `geometry_resolution` 是几何档位，不是贴图解析度。单图智能拓扑用 `model_type:"smart-topology"`、匹配的 `ai_model` 和 `target_polycount`（目标三角面数），不能直接照搬到多图。取响应 `result` 为 ID，按同类型 `GET /<resource>/<id>` 或官方 SSE 查询；`SUCCEEDED` 后下载 `model_urls.glb` 与所需的 `texture_urls`，`FAILED` / `CANCELED` 停。
+**REST**：全球端点 `https://api.meshy.ai/openapi/v1`，用 Bearer 鉴权。[单图](https://docs.meshy.ai/en/api/image-to-3d) `POST /image-to-3d` 传 `image_url`；[多图](https://docs.meshy.ai/en/api/multi-image-to-3d) `POST /multi-image-to-3d` 传 `image_urls`（1–4 张、受支持的 data URI 或已授权可公开直链；支持首张作正面的模型要将正面放第一）。裸网格设 `should_texture:false`，需要时设 `target_formats:["glb"]`；多图的 `geometry_resolution` 是几何档位，不是贴图解析度。单图智能拓扑用 `model_type:"smart-topology"`、匹配的 `ai_model` 和 `target_polycount`（目标三角面数），不能直接照搬到多图；注意 T2.5 的智能拓扑以三角面为主，与 Tripo P 系列的四边面优先不同，需要四边拓扑时优先 Tripo 或事后 Remesh 选四边占优。已有模型降面用 [Remesh](https://docs.meshy.ai/en/api/remesh)，字段按当前文档核对拓扑模式与面数范围。取响应 `result` 为 ID，按同类型 `GET /<resource>/<id>` 或官方 SSE 查询；`SUCCEEDED` 后下载 `model_urls.glb` 与所需的 `texture_urls`，`FAILED` / `CANCELED` 停。
 
 **分阶段贴图**：几何确认后可用 [Retexture](https://docs.meshy.ai/en/api/retexture) 传成功的 Meshy API `input_task_id`，或传本地修好资产的 `model_url`（data URI/直链须授权）；已有好 UV 时用 `enable_original_uv:true` 并实测是否保留。单图、多视图或文本风格按文档选一；例如 N1 是 2K 基色，不接 PBR，不能用纯文本。结果即便颜色更对也要对照裂缝、线框、UV、绑定与标识，失败则保留原几何并在本地修贴图。
 

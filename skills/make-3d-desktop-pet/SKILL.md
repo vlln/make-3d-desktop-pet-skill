@@ -4,7 +4,7 @@ description: >
   制作可实装的 3D 桌宠，或排查其中任一步。用于从原画、三视图或提示词生成角色，局部修图，从 Tripo 或 Meshy 生成可动画化的网格，在 Blender 修模型和贴图、搭 VRM 骨架、修权重、做弹簧骨和碰撞体、做表情，以及在 Mate Engine 或其他桌宠运行时实装验收。
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 # 制作 3D 桌宠
